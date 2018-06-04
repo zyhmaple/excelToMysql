@@ -22,7 +22,6 @@ public enum baseSqlOperator {
         InputStream is = baseSqlOperator.class.getClassLoader().getResourceAsStream(resource);
         SqlSessionFactory sessionFactory = new SqlSessionFactoryBuilder().build(is);
         session = sessionFactory.openSession();
-        sessionFactory.
         
 	}
 	
