@@ -1,18 +1,29 @@
 package com.zyh.im.excelToMysql;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 public class ExcelSheetObject {
 
 	
-	public int rowNum;
+	private int rowNum;
 	
-	public HashMap<Integer,Integer> columnNumOfRow;
+	private int columnNum;
 	
-	public Coordinate leftTop;
+	private LinkedHashMap<Integer,Integer> columnNumOfEveryRow;
 	
-	public Coordinate rightBottom;
+	private LinkedHashMap<Integer,Integer> RowNumOfEveryColumn;
 	
+	private Coordinate leftTop;
+	
+	private Coordinate rightBottom;
+	
+	private List<ColumnField> columnFileds;
+	
+	private XSSFSheet sheet;
 	public int getRowNum() {
 		return rowNum;
 	}
@@ -21,13 +32,7 @@ public class ExcelSheetObject {
 		this.rowNum = rowNum;
 	}
 
-	public HashMap<Integer, Integer> getColumnNumOfRow() {
-		return columnNumOfRow;
-	}
 
-	public void setColumnNumOfRow(HashMap<Integer, Integer> columnNumOfRow) {
-		this.columnNumOfRow = columnNumOfRow;
-	}
 
 	public Coordinate getLeftTop() {
 		return leftTop;
@@ -47,9 +52,60 @@ public class ExcelSheetObject {
 
 
 	
-	class Coordinate{
+	public int getColumnNum() {
+		return columnNum;
+	}
+
+	public void setColumnNum(int columnNum) {
+		this.columnNum = columnNum;
+	}
+
+	public LinkedHashMap<Integer, Integer> getColumnNumOfEveryRow() {
+		return columnNumOfEveryRow;
+	}
+
+	public void setColumnNumOfEveryRow(LinkedHashMap<Integer, Integer> columnNumOfEveryRow) {
+		this.columnNumOfEveryRow = columnNumOfEveryRow;
+	}
+
+	public LinkedHashMap<Integer, Integer> getRowNumOfEveryColumn() {
+		return RowNumOfEveryColumn;
+	}
+
+	public void setRowNumOfEveryColumn(LinkedHashMap<Integer, Integer> rowNumOfEveryColumn) {
+		RowNumOfEveryColumn = rowNumOfEveryColumn;
+	}
+
+
+
+	public List<ColumnField> getColumnFileds() {
+		return columnFileds;
+	}
+
+	public void setColumnFileds(List<ColumnField> columnFileds) {
+		this.columnFileds = columnFileds;
+	}
+
+	public XSSFSheet getSheet() {
+		return sheet;
+	}
+
+	public void setSheet(XSSFSheet sheet) {
+		this.sheet = sheet;
+	}
+
+
+
+	/*
+	 *  坐标
+	 */
+	static class Coordinate{
 		int X;
 		int Y;
+		public Coordinate(int x, int y) {
+			this.X = x;
+			this.Y = y;
+		}
 		public int getX() {
 			return X;
 		}
@@ -63,5 +119,24 @@ public class ExcelSheetObject {
 			Y = y;
 		}
 	}
+
+	static class ColumnField{
+		String columnName;
+		String columnType;
+		public String getColumnName() {
+			return columnName;
+		}
+		public void setColumnName(String columnName) {
+			this.columnName = columnName;
+		}
+		public String getColumnType() {
+			return columnType;
+		}
+		public void setColumnType(String columnType) {
+			this.columnType = columnType;
+		}
+	}
+
+
 	
 }
