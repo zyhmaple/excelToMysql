@@ -25,10 +25,15 @@
         </where>
     </select>
     
-    <select id="createTable" resultType="map">
-        #{createTable} 
-    </select>
-    
+    <update id="createTable" parameterType="map">
+        ${tableName} 
+    </update>
+    <insert id="insertTabelValue"  parameterType="map">
+     insert into ${tableName}(${columnNames})  values 
+        <foreach collection="columnNameValues" item="item" index="index" separator=",">  
+            (${item})
+        </foreach>
+    </insert>
     
     <insert id="insert"  parameterType="java.util.List">
      insert into im_excel_mysql_table_rel(sheet_name,table_name,table_desc)  values 

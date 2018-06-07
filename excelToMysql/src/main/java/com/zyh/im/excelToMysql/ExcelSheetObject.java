@@ -23,6 +23,8 @@ public class ExcelSheetObject {
 	
 	private List<ColumnField> columnFileds;
 	
+	private List<String> columnValues;
+	
 	private XSSFSheet sheet;
 	public int getRowNum() {
 		return rowNum;
@@ -92,6 +94,16 @@ public class ExcelSheetObject {
 
 	public void setSheet(XSSFSheet sheet) {
 		this.sheet = sheet;
+	}
+
+
+
+	public List<String> getColumnValues() {
+		return columnValues;
+	}
+
+	public void setColumnValues(List<String> columnValues) {
+		this.columnValues = columnValues;
 	}
 
 

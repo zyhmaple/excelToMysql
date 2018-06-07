@@ -41,10 +41,10 @@ public class App {
 
 		List<User> users = baseSqlOperator.getList("getUsers");
 		System.out.println(users);
-		List<Map<String, Object>> newSheetList = new ArrayList<Map<String, Object>>();
+		List<Map<String, Object>> newSheetList = null;
 		try {
 
-			InputStream is = App.class.getClassLoader().getResourceAsStream("test.xlsx");
+			InputStream is = App.class.getClassLoader().getResourceAsStream("test1.xlsx");
 			// POIFSFileSystem fs=new POIFSFileSystem(is);
 
 			// XSSFWorkbook
@@ -58,15 +58,15 @@ public class App {
 			XSSFWorkbook wb = new XSSFWorkbook(is);
 
 			for (int i = 0; i < wb.getNumberOfSheets(); i++) {
+				newSheetList = new ArrayList<Map<String, Object>>();
 				XSSFSheet sheet = wb.getSheetAt(i);
 				
-
-				ExcelSheetObject check =checkSheetStructure.checkSheet(sheet);
-
 				//ExcelSheetObject check =checkSheetStructure.checkSheet(sheet);
 				
 				if (!sheetName.contains(sheet.getSheetName()))
 				{
+					ExcelSheetObject check =checkSheetStructure.checkSheet(sheet);
+
 					HashMap<String, Object> rel = new HashMap<String, Object>();
 					rel.put("sheet_name", sheet.getSheetName());
 					rel.put("table_name", table_name_prefix + String.valueOf(i));
@@ -80,10 +80,21 @@ public class App {
 					Map<String, Object> ctMap = new HashMap<String, Object>();
 					
 					ctMap.put("tableName",createTable(table_name_prefix + String.valueOf(i),check));
+					//baseSqlOperator.insert("insert", newSheetList);
 					
-					baseSqlOperator.insert("createTable", newSheetList);
+					baseSqlOperator.update("createTable", ctMap);
+					baseSqlOperator.insert("insert", newSheetList);
+					
+			    	Map<String, Object> ctValue = new HashMap<String, Object>();
+			    	ctValue.put("tableName",table_name_prefix + String.valueOf(i));
+		    		ctValue.put("columnNames",checkSheetStructure.getColumnFieldStr(check));
+		    		ctValue.put("columnNameValues",check.getColumnValues());
+		    		
+					baseSqlOperator.insert("insertTabelValue", ctValue);
+					baseSqlOperator.commit();
 				}
 				
+
 
 				int lostIndex = sheet.getLastRowNum();
 				//记录行数，列数；对行列进行分析
@@ -113,15 +124,17 @@ public class App {
 
     		for(ColumnField col :checkResult.getColumnFileds())
     		{
-    			if(sql.length()>0)
-    				sql.append(",");
-    			sql.append(col.columnName + " "+col.columnType);
+/*    			if(sql.length()>0)
+    				sql.append(",");*/
+    			sql.append(col.columnName + " "+col.columnType).append(",");
     		}
 
     		StringBuilder createTableSql = new StringBuilder();
-    		createTableSql.append("create table "+tableName +"(");
+    		createTableSql.append("create table  `"+tableName +"`(");
+    		createTableSql.append(" `id` int(11) NOT NULL AUTO_INCREMENT,");
     		createTableSql.append(sql);
-    		createTableSql.append(");");
+    		createTableSql.append(" PRIMARY KEY (`id`)");     
+    		createTableSql.append(") ENGINE=InnoDB DEFAULT CHARSET=utf8;");
     		
 	    	return createTableSql.toString();
     }
