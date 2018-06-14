@@ -126,20 +126,20 @@ public class checkSheetStructure {
 	}
 
 	public static String processColumnName(XSSFCell cell) {
-		String columnName = getCellValue(cell);
+		String columnName = getCellValue(cell).replace("'", "");
 		String pattern1 = "^\\d\\+";//数字加
 		String pattern2 = "^\\d{4}\\D+\\d{2}\\D+\\d{2}\\D+\\d{2}[\\s\\S]*";//日期
 		String pattern3 = "^\\d";//纯数字
 		String colName = "";
 		boolean isMatch = Pattern.matches(pattern1, columnName);
-		if (isMatch)
+		if (Pattern.matches(pattern1, columnName))
 			colName = "`UV_" + columnName.split("\\+")[0] + "_plus`";
 		else if(Pattern.matches(pattern2, columnName))
 			colName = "`UV_" + columnName.split(" ")[0].replace("-","") + "`";
 		else if(Pattern.matches(pattern3, columnName))
 			colName = "`UV_" + columnName.split("\\+")[0] + "`";
 		else
-			colName = "`" + columnName + "`";
+			colName = "" + columnName + "";
 		return colName.toLowerCase();
 	}
 
@@ -186,7 +186,10 @@ public class checkSheetStructure {
 			value = cell.getBooleanCellValue() + "";
 			break;
 		case FORMULA: // 公式
-			value = cell.getCellFormula() + "";
+			if(cell.getNumericCellValue()>0)
+				value = new DecimalFormat("0").format(cell.getNumericCellValue());
+			else
+				value = cell.getCellFormula();
 			break;
 		case BLANK: // 空值
 			value = "";
@@ -248,9 +251,18 @@ public class checkSheetStructure {
 			value = "tinyint(4) DEFAULT NULL";
 			break;
 		case FORMULA: // 公式
-			value = cell.getCellFormula() + "";
-			value = "";
+		{
+			if(cell.getNumericCellValue()>0)
+			{
+				double number = cell.getNumericCellValue();
+				double eps = 1e-10; // 精度范围
+				if (number - (double) ((int) number) < eps)
+					value = "decimal(8,0) DEFAULT NULL";
+				else
+					value = "decimal(8,4) DEFAULT NULL";
+			}
 			break;
+		}
 		case BLANK: // 空值
 			value = "";
 			break;
